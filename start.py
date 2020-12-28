@@ -16,8 +16,7 @@ def init_salty_bot(web):
 
 if __name__ == "__main__":
     web_gui = WebApp()
-    salty_bot = init_salty_bot(web_gui)
-    bot_thread = threading.Thread(target=salty_bot.start)
+    bot_thread = threading.Thread(target=init_salty_bot, args=(web_gui,))
     bot_thread.start()
     web_gui.start()
     salty_bot.die()

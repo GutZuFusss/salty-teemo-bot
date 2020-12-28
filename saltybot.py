@@ -28,6 +28,8 @@ class SaltyBot(irc.bot.SingleServerIRCBot):
         print('Connecting to ' + server + ' on port ' + str(port) + '...')
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port, 'oauth:'+token)], username, username)
 
+        self.start()
+
 
     def handle_bet(self, s):
         if time.time() - self.last_bet > 300:
