@@ -31,7 +31,7 @@ class WebApp:
                         figure={'data': [self.initial_trace],
                                 'layout': go.Layout(
                                         xaxis=dict(range=[min(self.num_bets), max(self.num_bets)]),
-                                        yaxis=dict(range=[min(self.red_bets + self.blue_bets), max(self.red_bets + self.blue_bets)]),
+                                        yaxis=dict(range=[0, self.calc_max_graph_height()]),
                                         plot_bgcolor='rgb(10,10,10)'
                                         )
                                 }),
@@ -93,10 +93,15 @@ class WebApp:
         return {'data': [sc_red_bets, sc_blue_bets],
                 'layout': go.Layout(
                     xaxis=dict(range=[min(self.num_bets), max(self.num_bets) + 1]),
-                    yaxis=dict(range=[min(self.red_bets + self.blue_bets), max(self.red_bets + self.blue_bets) + 200]),
+                    yaxis=dict(range=[0, self.calc_max_graph_height()]),
                     plot_bgcolor='rgb(10,10,10)'
                     )
                 }
+
+    def calc_max_graph_height(self):
+        h = max(self.red_bets + self.blue_bets)
+        h *= 1.05
+        return h
 
     def start(self):
         self.app.run_server(debug=True, use_reloader=False)
