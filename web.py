@@ -99,4 +99,4 @@ class WebApp:
                 }
 
     def start(self):
-        self.app.run_server(debug=True)
+        self.app.run_server(debug=True, use_reloader=False)
