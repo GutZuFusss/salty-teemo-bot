@@ -14,7 +14,7 @@ def init_salty_bot(web):
     channel   = 'saltyteemo'
     return SaltyBot(username, client_id, token, channel, web)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     web_gui = WebApp()
     bot_thread = threading.Thread(target=init_salty_bot, args=(web_gui,))
     bot_thread.start()
