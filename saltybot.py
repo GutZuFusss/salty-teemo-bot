@@ -2,17 +2,15 @@ import sys
 import irc.bot
 import requests
 import time
-import json
 
-from web import update_bets, reset_bets
+class SaltyBot(irc.bot.SingleServerIRCBot):
 
-
-class TwitchBot(irc.bot.SingleServerIRCBot):
-
-    def __init__(self, username, client_id, token, channel):
+    def __init__(self, username, client_id, token, channel, web_app):
         self.client_id = client_id
         self.token = token
         self.channel = '#' + channel
+
+        self.web_app = web_app
 
         self.last_bet = time.time() - 9999999; # xd clean
         self.shrooms_red = 0
@@ -35,7 +33,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         if time.time() - self.last_bet > 300:
             self.shrooms_red = 0
             self.shrooms_blue = 0
-            reset_bets()
+            self.web_app.reset_bets()
 
 
         self.last_bet = time.time();
@@ -51,7 +49,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         print('BLUE: ' + str(self.shrooms_blue))
         print('#####################################')
 
-        update_bets([self.shrooms_red, self.shrooms_blue])
+        self.web_app.update_bets(self.get_bets())
 
 
     def on_welcome(self, c, e):
@@ -67,20 +65,5 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         if nick == "xxsaltbotxx" and "Bet complete" in msg:
             self.handle_bet(msg)
 
-
-with open('config.json', 'r') as f: # TODO: this should def not be done here xd
-    config = json.load(f)
-username  = config['username']
-client_id = config['client_id']
-token     = config['token']
-channel   = 'saltyteemo'
-bot = TwitchBot(username, client_id, token, channel)
-
-def start_salty_bot():
-    bot.start()
-
-def stop_salty_bot():
-    bot.die()
-
-def get_bets():
-    return [bot.shrooms_red, bot.shrooms_blue]
+    def get_bets(self):
+        return [self.shrooms_red, self.shrooms_blue] # TODO: ret this as a map
