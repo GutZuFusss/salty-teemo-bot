@@ -7,6 +7,15 @@ import plotly.graph_objs as go
 from collections import deque
 
 
+GRAPH_UPDATE_INTERVAL = 1000
+GRAPH_H_MULTIPLIER = 1.05
+PLOT_BG_COLOR = 'rgb(10,10,10)'
+GRAPH_MARKERS_SIZE = 12
+RED_MARKERS_INNER = '#e65555'
+RED_MARKERS_OUTTER = '#830000'
+BLUE_MARKERS_INNER = '#339fff'
+BLUE_MARKERS_OUTER = '#3333ff'
+
 class WebApp:
     def __init__(self):
         self.num_bets = deque()
@@ -32,12 +41,12 @@ class WebApp:
                                 'layout': go.Layout(
                                         xaxis=dict(range=[min(self.num_bets), max(self.num_bets)]),
                                         yaxis=dict(range=[0, self.calc_max_graph_height()]),
-                                        plot_bgcolor='rgb(10,10,10)'
+                                        plot_bgcolor=PLOT_BG_COLOR
                                         )
                                 }),
                 dcc.Interval(
                     id='graph-update',
-                    interval=1*1000
+                    interval=GRAPH_UPDATE_INTERVAL
                 ),
             ]
         )
@@ -59,17 +68,17 @@ class WebApp:
         self.blue_bets.clear()
         self.blue_bets.append(0)
 
-    def update_graph_scatter(self, n): # TODO: self? xd
+    def update_graph_scatter(self, n):
         sc_red_bets = go.Scatter(
             x=list(self.num_bets),
             y=list(self.red_bets),
-            name='BetsRed',
+            name='Red (total shrooms)',
             mode='lines+markers',
             marker=dict(
-                color='#e65555',
-                size=12,
+                color=RED_MARKERS_INNER,
+                size=GRAPH_MARKERS_SIZE,
                 line=dict(
-                    color='#830000',
+                    color=RED_MARKERS_OUTTER,
                     width=2
                 )
             )
@@ -78,13 +87,13 @@ class WebApp:
         sc_blue_bets = go.Scatter(
             x=list(self.num_bets),
             y=list(self.blue_bets),
-            name='BetsBlue',
+            name='Blue (total shrooms)',
             mode='lines+markers',
             marker=dict(
-                color='#339fff',
-                size=12,
+                color=BLUE_MARKERS_INNER,
+                size=GRAPH_MARKERS_SIZE,
                 line=dict(
-                    color='#3333ff',
+                    color=BLUE_MARKERS_OUTER,
                     width=2
                 )
             )
@@ -94,13 +103,13 @@ class WebApp:
                 'layout': go.Layout(
                     xaxis=dict(range=[min(self.num_bets), max(self.num_bets) + 1]),
                     yaxis=dict(range=[0, self.calc_max_graph_height()]),
-                    plot_bgcolor='rgb(10,10,10)'
+                    plot_bgcolor=PLOT_BG_COLOR
                     )
                 }
 
     def calc_max_graph_height(self):
         h = max(self.red_bets + self.blue_bets)
-        h *= 1.05
+        h *= GRAPH_H_MULTIPLIER
         return h
 
     def start(self):

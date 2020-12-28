@@ -3,6 +3,11 @@ import irc.bot
 import requests
 import time
 
+BET_BOT_NAME = 'xxsaltbotxx'
+BET_MSG_TRIGGER = 'Bet complete'
+PRE_BET_AMOUNT = ', '
+POST_BET_AMOUNT = '. Your'
+
 class SaltyBot(irc.bot.SingleServerIRCBot):
 
     def __init__(self, username, client_id, token, channel, web_app):
@@ -40,7 +45,7 @@ class SaltyBot(irc.bot.SingleServerIRCBot):
 
         self.last_bet = time.time();
 
-        amount = int(s[s.find(", ")+len(", "):s.rfind(". Your")])
+        amount = int(s[s.find(PRE_BET_AMOUNT)+len(PRE_BET_AMOUNT):s.rfind(POST_BET_AMOUNT)])
         if 'RED' in s:
             self.shrooms_red += amount
         if 'BLUE' in s:
@@ -64,7 +69,7 @@ class SaltyBot(irc.bot.SingleServerIRCBot):
         nick = e.source.nick
         print('[recv] "' + nick + '": ' + e.arguments[0])
 
-        if nick == 'xxsaltbotxx' and 'Bet complete' in msg:
+        if nick == BET_BOT_NAME and BET_MSG_TRIGGER in msg:
             self.handle_bet(msg)
 
     def get_bets(self):
